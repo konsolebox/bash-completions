@@ -36,7 +36,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	fi
 
 	function _ebuild_comp_filter_filenames {
-		local filenames f
+		local f filenames
 		readarray -t filenames
 
 		for f in "${filenames[@]}"; do
@@ -53,7 +53,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	}
 
 	function _ebuild_comp_generate_filename_replies {
-		local temp i ebuilds=() dirname
+		local dirname ebuilds=() i temp
 		readarray -t COMPREPLY < <(compgen -f -- "$1" | _ebuild_comp_filter_filenames)
 
 		while [[ ${#COMPREPLY[@]} -eq 1 && -d ${COMPREPLY} && -x ${COMPREPLY} ]]; do
@@ -147,7 +147,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	}
 
 	function _ebuild_comp {
-		local dont_add_space=false i opt arg prefix IFS=$' \t\n'
+		local arg dont_add_space=false i IFS=$' \t\n' opt prefix
 		COMPREPLY=()
 
 		if [[ COMP_CWORD -le 1 ]]; then
