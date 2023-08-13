@@ -25,7 +25,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	_GDB_COMP_USE_STATIC_OPTS=${_GDB_COMP_USE_STATIC_OPTS-false}
 	_GDB_COMP_SKIP_CHECK_ELF_EXECUTABLE=${_GDB_COMP_SKIP_CHECK_ELF_EXECUTABLE-false}
 	declare -gA _GDB_COMP_EXECUTABLE_TEST_CACHE=()
-	_GDB_PATH=
+	_GDB_COMP_GDB_PATH=
 
 	if false; then
 		function _gdb_comp_log_debug {
@@ -38,15 +38,15 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 			# From gdb 10.2
 			__="--args --batch --batch-silent --cd --command --configuration --core --data-directory --dbx --directory --eval-command --exec --fullname --help --init-command --init-eval-command --interpreter --nh --nw --nx --pid --quiet --readnever --readnow --return-child-result --se --silent --symbols --tty --tui --version --write -D -GDB -arguments -b -directory -ex -file -id -iex -ix -l -line -q -related -w -x"
 		else
-			__=${_GDB_COMP_OPT_CACHE["all_opts|${_GDB_PATH}"]-}
+			__=${_GDB_COMP_OPT_CACHE["all_opts|${_GDB_COMP_GDB_PATH}"]-}
 
 			if [[ -z $__ ]]; then
 				__=$(
 					shopt -so pipefail
-					"${_GDB_PATH}" --help 2>&1 | grep -Poe '-[[:alnum:]-]+' | sort -u
+					"${_GDB_COMP_GDB_PATH}" --help 2>&1 | grep -Poe '-[[:alnum:]-]+' | sort -u
 				) || return 1
 
-				_GDB_COMP_OPT_CACHE["all_opts|${_GDB_PATH}"]=$__
+				_GDB_COMP_OPT_CACHE["all_opts|${_GDB_COMP_GDB_PATH}"]=$__
 			fi
 		fi
 
@@ -58,13 +58,13 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 			# From gdb 10.2
 			__="--core|--exec|--pid|--directory|--se|--symbols|--command|-x|--init-command|-ix|--eval-command|-ex|--init-eval-command|-iex|--interpreter|--tty|-b|-l|--cd|--data-directory|-D"
 		else
-			__=${_GDB_COMP_OPT_CACHE["opts_with_arg_expr|${_GDB_PATH}"]-}
+			__=${_GDB_COMP_OPT_CACHE["opts_with_arg_expr|${_GDB_COMP_GDB_PATH}"]-}
 
 			if [[ -z $__ ]]; then
 				__=$(
 					shopt -so pipefail
 
-					"${_GDB_PATH}" --help 2>&1 | gawk -v ORS='|' '
+					"${_GDB_COMP_GDB_PATH}" --help 2>&1 | gawk -v ORS='|' '
 						match($0, /^ *(-[[:alnum:]]+) [[:upper:]]+/, a) {
 							print a[1]
 							next
@@ -78,7 +78,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 				) || return 1
 
 				__=${__%'|'}
-				_GDB_COMP_OPT_CACHE["opts_with_arg_expr|${_GDB_PATH}"]=$__
+				_GDB_COMP_OPT_CACHE["opts_with_arg_expr|${_GDB_COMP_GDB_PATH}"]=$__
 			fi
 		fi
 
@@ -236,7 +236,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 		COMPREPLY=()
 		local arg args_opt_specified=false dont_add_space=false exec=() exec_cword=0 i \
 				IFS=$' \t\n' opt past_double_dash=false prefix __
-		_GDB_PATH=$(type -p gdb) && [[ ${_GDB_PATH} ]] || return
+		_GDB_COMP_GDB_PATH=$(type -p gdb) && [[ ${_GDB_COMP_GDB_PATH} ]] || return
 		_gdb_comp_get_opts_with_arg_expr || return
 
 		for (( i = 1; i < COMP_CWORD; ++i )); do
