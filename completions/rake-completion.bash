@@ -1,6 +1,6 @@
 # rake-completion.bash
 #
-# Copyright (c) 2022 konsolebox
+# Copyright (c) 2023 konsolebox
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the “Software”), to deal
@@ -246,7 +246,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	}
 
 	function _rake_comp_get_unspecified_task_replies {
-		local prefix=$1 rakefile=$2 a_tasks s_tasks IFS=$'\n'
+		local prefix=$1 rakefile=$2 a_tasks s_tasks IFS=$'\n' __
 		local -A u_tasks=()
 		_rake_comp_get_available_tasks "${rakefile}" a_tasks || return 1
 		_rake_comp_get_specified_tasks s_tasks || s_tasks=()
