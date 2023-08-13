@@ -234,8 +234,8 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 
 	function _gdb_comp {
 		COMPREPLY=()
-		local args_opt_specified=false exec=() dont_add_space=false past_double_dash=false
-		local arg exec_cword=0 opt prefix i __
+		local arg args_opt_specified=false dont_add_space=false exec=() exec_cword=0 i \
+				IFS=$' \t\n' opt past_double_dash=false prefix __
 		_GDB_PATH=$(type -p gdb) && [[ ${_GDB_PATH} ]] || return
 		_gdb_comp_get_opts_with_arg_expr || return
 
