@@ -27,7 +27,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	_RAKE_COMP_CACHE_TASKS=${_RAKE_COMP_CACHE_TASKS-true}
 	_RAKE_COMP_USE_STATIC_OPTS=${_RAKE_COMP_USE_STATIC_OPTS-false}
 	_RAKE_COMP_WARN_WORDBREAKS_HAS_COLON=${_RAKE_COMP_WARN_WORDBREAKS_HAS_COLON-true}
-	_RAKE_PATH=
+	_RAKE_COMP_RAKE_PATH=
 
 	if false; then
 		function _rake_comp_log_debug {
@@ -40,13 +40,13 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 			# From rake 13.0.6
 			__="-A -B -C -D -E -G -H -I -N -P -R -T -V -W -X -e -f -g -h -j -m -n -p -q -r -s -t -v --all --backtrace --build-all --comments --describe --directory --dry-run --execute --execute-continue --execute-print --help --jobs --job-stats --libdir --multitask --nosearch --nosystem --no-deprecation-warnings --no-search --no-system --prereqs --quiet --rakefile --rakelib --rakelibdir --require --rules --silent --suppress-backtrace --system --tasks --trace --verbose --version --where"
 		else
-			__=${_RAKE_COMP_OPT_CACHE["all_opts|${_RAKE_PATH}"]-}
+			__=${_RAKE_COMP_OPT_CACHE["all_opts|${_RAKE_COMP_RAKE_PATH}"]-}
 
 			if [[ -z $__ ]]; then
 				__=$(
 					shopt -so pipefail
 
-					"${_RAKE_PATH}" --help 2>&1 | awk -F '[ =,]+' '
+					"${_RAKE_COMP_RAKE_PATH}" --help 2>&1 | awk -F '[ =,]+' '
 						p {
 							for (i = 2; i <= NF; ++i) {
 								if ($i ~ /^-/) {
@@ -60,7 +60,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 					'
 				) || return 1
 
-				_RAKE_COMP_OPT_CACHE["all_opts|${_RAKE_PATH}"]=$__
+				_RAKE_COMP_OPT_CACHE["all_opts|${_RAKE_COMP_RAKE_PATH}"]=$__
 			fi
 		fi
 
@@ -72,13 +72,13 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 			# From rake 13.0.6
 			__="--backtrace|--job-stats|--suppress-backtrace|-C|--directory|-D|--describe|-e|--execute|-E|--execute-continue|-f|--rakefile|-I|--libdir|-j|--jobs|-p|--execute-print|-r|--require|-R|--rakelibdir|-t|--trace|-T|--tasks|-W|--where"
 		else
-			__=${_RAKE_COMP_OPT_CACHE["opts_with_arg_expr|${_RAKE_PATH}"]-}
+			__=${_RAKE_COMP_OPT_CACHE["opts_with_arg_expr|${_RAKE_COMP_RAKE_PATH}"]-}
 
 			if [[ -z $__ ]]; then
 				__=$(
 					shopt -so pipefail
 
-					"${_RAKE_PATH}" --help 2>&1 | awk -F '[ =,]+' -v ORS='|' '
+					"${_RAKE_COMP_RAKE_PATH}" --help 2>&1 | awk -F '[ =,]+' -v ORS='|' '
 						p {
 							delete t
 							for (i = 2; i <= NF; ++i)
@@ -96,7 +96,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 				) || return 1
 
 				__=${__%'|'}
-				_RAKE_COMP_OPT_CACHE["opts_with_arg_expr|${_RAKE_PATH}"]=$__
+				_RAKE_COMP_OPT_CACHE["opts_with_arg_expr|${_RAKE_COMP_RAKE_PATH}"]=$__
 			fi
 		fi
 
@@ -215,7 +215,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 			[[ ${#__r[@]} && ${ts} && ${_RAKE_COMP_TASK_CACHE_TS[$1]-} == ${ts} ]] && return 0
 		fi
 
-		readarray -t __r < <("${_RAKE_PATH}" -f "${rakefile}" --tasks 2>&1 | \
+		readarray -t __r < <("${_RAKE_COMP_RAKE_PATH}" -f "${rakefile}" --tasks 2>&1 | \
 				awk '$1 == "rake" && / # / { print $2 }')
 
 		if [[ ${#__r[@]} -gt 0 && ${_RAKE_COMP_CACHE_TASKS} == true && ${ts} ]]; then
@@ -276,7 +276,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 
 	function _rake_comp {
 		local dont_add_space=false i opt arg prefix u_tasks IFS=$' \t\n' __
-		_RAKE_PATH=$(type -p rake) && [[ ${_RAKE_PATH} ]] || return
+		_RAKE_COMP_RAKE_PATH=$(type -p rake) && [[ ${_RAKE_COMP_RAKE_PATH} ]] || return
 		COMPREPLY=()
 
 		[[ ${_RAKE_COMP_WARN_WORDBREAKS_HAS_COLON} == true && ${COMP_WORDBREAKS} == *:* ]] && \
