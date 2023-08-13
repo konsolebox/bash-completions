@@ -275,7 +275,7 @@ if [[ BASH_VERSINFO -ge 5 ]]; then
 	}
 
 	function _rake_comp {
-		local dont_add_space=false i opt arg prefix u_tasks __
+		local dont_add_space=false i opt arg prefix u_tasks IFS=$' \t\n' __
 		_RAKE_PATH=$(type -p rake) && [[ ${_RAKE_PATH} ]] || return
 		COMPREPLY=()
 
